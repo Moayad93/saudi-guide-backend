@@ -45,4 +45,4 @@ Authors
   <li><a href="https://github.com/i23ud/">Saud Alshamsi</a></li>
   <li><a href="https://github.com/FahadAldawish/">Fahad Aldawish</a></li>
   <li><a href="https://github.com/Moayad93/">Moayad Alnuwaysir</a></li>
-<ul>
+</ul>
