@@ -30,12 +30,31 @@ const expressPort = 3000;
 
 // establish database connection
 mongoose.Promise = global.Promise;
-mongoose.connect(db, {
-  useMongoClient: true
-});
+mongoose
+  .connect(db, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true
+  })
+  .then(() => {
+    console.log("DB Connected!");
+  })
+  .catch(err => {
+    console.log(err);
+  });
+
+// check for DB connection
+if (!db) {
+  console.log("Error connecting DB");
+} else {
+  console.log("DB connected successfully");
+}
 
 // instantiate express application object
 const app = express();
+
+// Send message for default URL
+app.get("/", (req, res) => res.send("Hello World with Express"));
 
 // set CORS headers on response from this API using the `cors` NPM package
 // `CLIENT_ORIGIN` is an environment variable that will be set on Heroku
