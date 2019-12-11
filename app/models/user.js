@@ -25,10 +25,10 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-userSchema.virtual("examples", {
-  ref: "Example",
+userSchema.virtual("trips", {
+  ref: "Trip",
   localField: "_id",
-  foreignField: "owner"
+  foreignField: "guide"
 });
 
 module.exports = mongoose.model("User", userSchema);
