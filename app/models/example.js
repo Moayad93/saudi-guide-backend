@@ -1,6 +1,30 @@
 const mongoose = require("mongoose");
 
-const exampleSchema = new mongoose.Schema(
+const activitySchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true
+  },
+  category: {
+    type: String,
+    enum: ["Adventure", "Food", "Culture", "Shopping", "Sports"],
+    required: true
+  },
+  price: {
+    type: Number,
+    default: 0
+  },
+  startDate: {
+    type: Date,
+    required: true
+  },
+  endDate: {
+    typr: Date,
+    required: true
+  }
+});
+
+const tripSchema = new mongoose.Schema(
   {
     title: {
       type: String,
@@ -21,4 +45,4 @@ const exampleSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Example", exampleSchema);
+module.exports = mongoose.model("Trip", tripSchema);
