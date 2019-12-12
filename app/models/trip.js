@@ -37,7 +37,7 @@ const tripSchema = new mongoose.Schema(
     activities: [activitySchema],
     includedInTrip: {
       enum: ["Transportation", "Yoga", "Guide", "Food"],
-      // required: true
+      required: false
     },
     whatToBring: {
       enum: ["Yoga mat", "Snacks"],
