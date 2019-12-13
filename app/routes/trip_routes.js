@@ -118,7 +118,13 @@ router.delete("/trips/:id", requireToken, (req, res, next) => {
     .catch(next);
 });
 
-// SHOW all activities for a single trip
+/* 
+Action:      INDEX
+Method:      GET
+URI:        /trips/:id/activities
+Description: Get all activity from a certian trip
+*/
+
 router.get("/trips/:id/activities", (req, res) => {
   Trip.findById(req.params.id)
     .then((trip) => {
@@ -129,7 +135,13 @@ router.get("/trips/:id/activities", (req, res) => {
     });
 });
 
-// SHOW  one activity
+/* 
+Action:      SHOW
+Method:      GET
+URI:        /trips/:tripID/activities/:activityID
+Description: Get a spacific activity from a certain trip
+*/
+
 router.get("/trips/:tripID/activities/:activityID", (req, res) => {
   //find a specific article
   Trip.findById(req.params.tripID)
@@ -140,16 +152,22 @@ router.get("/trips/:tripID/activities/:activityID", (req, res) => {
     });
 });
 
+/* 
+Action:      CREATE
+Method:      POST
+URI:        /trips/:id/activities
+Description: create a new activity for a spacific trip
+*/
+
 router.post("/trips/:id/activities", (req, res) => {
-  const newActivity = new Activity(req.body);
+  const newActivity = new Activity(req.body.activity);
   Trip.findById(req.params.id)
     .then((trip) => {
       trip.activities.push(newActivity);
       // console.log(trip.activities);
       trip.save()
-        .then((result) => {
-
-          res.status(201).json(result);
+        .then((newActivity) => {
+          res.status(201).json(newActivity);
         }).catch((err) => {
           console.error();
         });
@@ -159,21 +177,29 @@ router.post("/trips/:id/activities", (req, res) => {
     })
 });
 
+/* 
+Action:      UPDATE
+Method:      PATCH
+URI:        /trips/:id/activities/:activityID
+Description: update a spacific activity for a spacific trip
+*/
+
 router.patch("/trips/:id/activities/:activityID", (req, res) => {
   console.log("I am in PATCH");
 
   Trip.findById(req.params.id)
     .then((trip) => {
 
-      // to change any data that user send 
-      trip.activities.id(req.params.activityID).name = req.body.name;
-      trip.activities.id(req.params.activityID).price = req.body.price;
-      trip.activities.id(req.params.activityID).category = req.body.category;
-      trip.activities.id(req.params.activityID).startDate = req.body.startDate;
-      trip.activities.id(req.params.activityID).endDate = req.body.endDate;
+      // to change any possible data that user might send 
+      trip.activities.id(req.params.activityID).name = req.body.activity.name;
+      trip.activities.id(req.params.activityID).price = req.body.activity.price;
+      trip.activities.id(req.params.activityID).category = req.body.activity.category;
+      trip.activities.id(req.params.activityID).startDate = req.body.activity.startDate;
+      trip.activities.id(req.params.activityID).endDate = req.body.activity.endDate;
+
       trip.save()
-        .then((trip) => {
-          res.json(trip)
+        .then((updatedTrip) => {
+          res.json(updatedTrip)
         }).catch((err) => {
           console.error();
         });
@@ -182,19 +208,25 @@ router.patch("/trips/:id/activities/:activityID", (req, res) => {
     });
 });
 
+/* 
+Action:      DESTROY
+Method:      DELETE
+URI:        /trips/:id/activities/:activityID
+Description: delete a spacific activity for a spacific trip
+*/
+
 router.delete("/trips/:id/activities/:activityID", (req, res) => {
   Trip.findById(req.params.id)
     .then((trip) => {
       trip.activities.id(req.params.activityID).remove();
-      console.log(trip);
       trip.save()
-        .then((result) => {
-          res.json(result);
+        .then((updatedTrip) => {
+          res.json(updatedTrip);
         }).catch((err) => {
-
+          console.error();
         });
     }).catch((err) => {
-
+      console.error();
     });
 });
 
