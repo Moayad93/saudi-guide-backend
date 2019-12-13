@@ -5,7 +5,7 @@ const passport = require("passport");
 
 // pull in Mongoose model for trips
 const Trip = require("../models/trip").Trip;
-
+const Activity = require("../models/trip").Activity;
 // this is a collection of methods that help us detect situations when we need
 // to throw a custom error
 const customErrors = require("../../lib/custom_errors");
@@ -45,7 +45,7 @@ router.get("/trips", requireToken, (req, res, next) => {
 
 // SHOW
 // GET /trips/5a7db6c74d55bc51bdf39793
-router.get("/trips/:id", requireToken, (req, res, next) => {
+router.get("/trips/:id", (req, res, next) => {
   // req.params.id will be set based on the `:id` in the route
   Trip.findById(req.params.id)
     .then(handle404)
@@ -53,7 +53,7 @@ router.get("/trips/:id", requireToken, (req, res, next) => {
     .then(trip => {
       // pass the `req` object and the Mongoose record to `requireOwnership`
       // it will throw an error if the current user isn't the owner
-      requireOwnership(req, trip);
+      // requireOwnership(req, trip);
 
       res.status(200).json({ trip: trip.toObject() });
     })
@@ -116,6 +116,118 @@ router.delete("/trips/:id", requireToken, (req, res, next) => {
     .then(() => res.sendStatus(204))
     // if an error occurs, pass it to the handler
     .catch(next);
+});
+
+/* 
+Action:      INDEX
+Method:      GET
+URI:        /trips/:id/activities
+Description: Get all activity from a certian trip
+*/
+
+router.get("/trips/:id/activities", (req, res) => {
+  Trip.findById(req.params.id)
+    .then((trip) => {
+
+      res.status(200).json(trip)
+    }).catch((err) => {
+      console.error()
+    });
+});
+
+/* 
+Action:      SHOW
+Method:      GET
+URI:        /trips/:tripID/activities/:activityID
+Description: Get a spacific activity from a certain trip
+*/
+
+router.get("/trips/:tripID/activities/:activityID", (req, res) => {
+  //find a specific article
+  Trip.findById(req.params.tripID)
+    .then((trip) => { //trip holds the found arrticle
+      res.status(200).json(trip.activities.id(req.params.activityID)); // bring the activity that has the same id from params
+    }).catch((err) => {
+      console.log(err);
+    });
+});
+
+/* 
+Action:      CREATE
+Method:      POST
+URI:        /trips/:id/activities
+Description: create a new activity for a spacific trip
+*/
+
+router.post("/trips/:id/activities", (req, res) => {
+  const newActivity = new Activity(req.body.activity);
+  Trip.findById(req.params.id)
+    .then((trip) => {
+      trip.activities.push(newActivity);
+      // console.log(trip.activities);
+      trip.save()
+        .then((newActivity) => {
+          res.status(201).json(newActivity);
+        }).catch((err) => {
+          console.error();
+        });
+    })
+    .catch((err) => {
+      console.error();
+    })
+});
+
+/* 
+Action:      UPDATE
+Method:      PATCH
+URI:        /trips/:id/activities/:activityID
+Description: update a spacific activity for a spacific trip
+*/
+
+router.patch("/trips/:id/activities/:activityID", (req, res) => {
+  console.log("I am in PATCH");
+
+  Trip.findById(req.params.id)
+    .then((trip) => {
+
+      // to change any possible data that user might send 
+      trip.activities.id(req.params.activityID).name = req.body.activity.name;
+      trip.activities.id(req.params.activityID).price = req.body.activity.price;
+      trip.activities.id(req.params.activityID).category = req.body.activity.category;
+      trip.activities.id(req.params.activityID).startDate = req.body.activity.startDate;
+      trip.activities.id(req.params.activityID).endDate = req.body.activity.endDate;
+
+      trip.save()
+        .then((updatedTrip) => {
+          res.json(updatedTrip)
+        }).catch((err) => {
+          console.error();
+        });
+    }).catch((err) => {
+      console.error();
+    });
+});
+
+/* 
+Action:      DESTROY
+Method:      DELETE
+URI:        /trips/:id/activities/:activityID
+Description: delete a spacific activity for a spacific trip
+*/
+
+router.delete("/trips/:id/activities/:activityID", (req, res) => {
+  Trip.findById(req.params.id)
+    .then((trip) => {
+      trip.activities.id(req.params.activityID).remove();
+      trip.save()
+        .then((updatedTrip) => {
+          res.json(updatedTrip);
+        }).catch((err) => {
+          console.error();
+        });
+    }).catch((err) => {
+      console.error();
+    });
 });
 
 module.exports = router;
