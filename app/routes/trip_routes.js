@@ -80,7 +80,7 @@ router.post("/trips", (req, res, next) => {
 
 // UPDATE
 // PATCH /trips/5a7db6c74d55bc51bdf39793
-router.patch("/trips/:id", requireToken, removeBlanks, (req, res, next) => {
+router.patch("/trips/:id", removeBlanks, (req, res, next) => {
   // if the client attempts to change the `guide` property by including a new
   // guide, prevent that by deleting that key/value pair
   delete req.body.trip.guide;
@@ -90,7 +90,7 @@ router.patch("/trips/:id", requireToken, removeBlanks, (req, res, next) => {
     .then(trip => {
       // pass the `req` object and the Mongoose record to `requireOwnership`
       // it will throw an error if the current user isn't the owner
-      requireOwnership(req, trip);
+      // requireOwnership(req, trip);
 
       // pass the result of Mongoose's `.update` to the next `.then`
       return trip.update(req.body.trip);
@@ -103,12 +103,12 @@ router.patch("/trips/:id", requireToken, removeBlanks, (req, res, next) => {
 
 // DESTROY
 // DELETE /trips/5a7db6c74d55bc51bdf39793
-router.delete("/trips/:id", requireToken, (req, res, next) => {
+router.delete("/trips/:id", (req, res, next) => {
   Trip.findById(req.params.id)
     .then(handle404)
     .then(trip => {
       // throw an error if current user doesn't own `trip`
-      requireOwnership(req, trip);
+      // requireOwnership(req, trip);
       // delete the trip ONLY IF the above didn't throw
       trip.remove();
     })
