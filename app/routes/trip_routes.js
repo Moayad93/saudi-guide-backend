@@ -29,9 +29,9 @@ const router = express.Router();
 
 // INDEX
 // GET /trips
-router.get("/trips", requireToken, (req, res, next) => {
+router.get("/trips", (req, res, next) => {
   // Option 1 get user's trips
-  Trip.find({ guide: req.user.id })
+  Trip.find()
     .then(trips => res.status(200).json({ trips: trips }))
     .catch(next);
 
@@ -63,9 +63,9 @@ router.get("/trips/:id", (req, res, next) => {
 
 // CREATE
 // POST /trips
-router.post("/trips", requireToken, (req, res, next) => {
+router.post("/trips", (req, res, next) => {
   // set guide of new trip to be current user
-  req.body.trip.guide = req.user.id;
+  // req.body.trip.guide = req.user.id;
 
   Trip.create(req.body.trip)
     // respond to succesful `create` with status 201 and JSON of new "trip"
@@ -80,7 +80,7 @@ router.post("/trips", requireToken, (req, res, next) => {
 
 // UPDATE
 // PATCH /trips/5a7db6c74d55bc51bdf39793
-router.patch("/trips/:id", requireToken, removeBlanks, (req, res, next) => {
+router.patch("/trips/:id", removeBlanks, (req, res, next) => {
   // if the client attempts to change the `guide` property by including a new
   // guide, prevent that by deleting that key/value pair
   delete req.body.trip.guide;
@@ -90,7 +90,7 @@ router.patch("/trips/:id", requireToken, removeBlanks, (req, res, next) => {
     .then(trip => {
       // pass the `req` object and the Mongoose record to `requireOwnership`
       // it will throw an error if the current user isn't the owner
-      requireOwnership(req, trip);
+      // requireOwnership(req, trip);
 
       // pass the result of Mongoose's `.update` to the next `.then`
       return trip.update(req.body.trip);
@@ -103,12 +103,12 @@ router.patch("/trips/:id", requireToken, removeBlanks, (req, res, next) => {
 
 // DESTROY
 // DELETE /trips/5a7db6c74d55bc51bdf39793
-router.delete("/trips/:id", requireToken, (req, res, next) => {
+router.delete("/trips/:id", (req, res, next) => {
   Trip.findById(req.params.id)
     .then(handle404)
     .then(trip => {
       // throw an error if current user doesn't own `trip`
-      requireOwnership(req, trip);
+      // requireOwnership(req, trip);
       // delete the trip ONLY IF the above didn't throw
       trip.remove();
     })
@@ -190,15 +190,37 @@ router.patch("/trips/:id/activities/:activityID", (req, res) => {
   Trip.findById(req.params.id)
     .then((trip) => {
 
+      console.log(trip.activities);
+
       // to change any possible data that user might send 
-      trip.activities.id(req.params.activityID).name = req.body.activity.name;
-      trip.activities.id(req.params.activityID).price = req.body.activity.price;
-      trip.activities.id(req.params.activityID).category = req.body.activity.category;
-      trip.activities.id(req.params.activityID).startDate = req.body.activity.startDate;
-      trip.activities.id(req.params.activityID).endDate = req.body.activity.endDate;
+      if (req.body.activity.title) {
+        trip.activities.id(req.params.activityID).title = req.body.activity.title;
+      }
+      if (req.body.activity.price) {
+        trip.activities.id(req.params.activityID).price = req.body.activity.price;
+      }
+      if (req.body.activity.description) {
+        trip.activities.id(req.params.activityID).description = req.body.activity.description;
+      }
+
+      if (req.body.activity.image) {
+        trip.activities.id(req.params.activityID).image = req.body.activity.image;
+      }
+      if (req.body.activity.category) {
+        trip.activities.id(req.params.activityID).category = req.body.activity.category;
+      }
+
+      if (req.body.activity.startDate) {
+        trip.activities.id(req.params.activityID).startDate = req.body.activity.startDate;
+      }
+      if (req.body.activity.endDate) {
+        trip.activities.id(req.params.activityID).endDate = req.body.activity.endDate;
+      }
 
       trip.save()
         .then((updatedTrip) => {
+          console.log("Success");
+          
           res.json(updatedTrip)
         }).catch((err) => {
           console.error();
