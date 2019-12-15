@@ -21,8 +21,7 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      default: "Tourist",
-      required: true
+      default: "Tourist"
     },
     token: String
   },
