@@ -29,7 +29,7 @@ const activitySchema = new mongoose.Schema({
     type: Date,
     required: true
   }
-});
+}, { timestamps: true });
 
 const tripSchema = new mongoose.Schema(
   {
@@ -65,24 +65,26 @@ const tripSchema = new mongoose.Schema(
       required: true
     },
     recommendation: {
-      type: [String],
+      type: String,
       required: false
     },
-    location: {
+    city: {
       type: {
         String,
-        default: "Point"
-      },
-      coordinates: {
-        type: [Number],
-        default: [0, 0]
+        required: true,
+      }
+    },
+    address: {
+      type: {
+        String,
+        required: true
       }
     },
     guide: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: false
-    }
+      required: true
+    },
   },
   {
     timestamps: true
