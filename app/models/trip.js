@@ -28,8 +28,14 @@ const activitySchema = new mongoose.Schema({
   endDate: {
     type: Date,
     required: true
-  }
-});
+  },
+  address: {
+    type: {
+      String,
+      required: true
+    }
+  },
+}, { timestamps: true });
 
 const tripSchema = new mongoose.Schema(
   {
@@ -40,6 +46,10 @@ const tripSchema = new mongoose.Schema(
     description: {
       type: String,
       required: true
+    },
+    image: {
+      type: String,
+      // required: true
     },
     activities: [activitySchema],
     includedInTrip: {
@@ -65,24 +75,18 @@ const tripSchema = new mongoose.Schema(
       required: true
     },
     recommendation: {
-      type: [String],
+      type: String,
       required: false
     },
-    location: {
-      type: {
-        String,
-        default: "Point"
+    city: {
+      type: String,
+        required: true,
       },
-      coordinates: {
-        type: [Number],
-        default: [0, 0]
-      }
-    },
     guide: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: false
-    }
+      required: true
+    },
   },
   {
     timestamps: true

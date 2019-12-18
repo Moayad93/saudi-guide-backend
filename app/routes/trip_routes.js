@@ -70,7 +70,8 @@ router.post("/trips", (req, res, next) => {
   Trip.create(req.body.trip)
     // respond to succesful `create` with status 201 and JSON of new "trip"
     .then(trip => {
-      res.status(201).json({ trip: trip.toObject() });
+      // res.status(201).json({ trip: trip.toObject() });
+      res.status(201).json({ trip: trip });
     })
     // if an error occurs, pass it off to our error handler
     // the error handler needs the error message and the `res` object so that it
