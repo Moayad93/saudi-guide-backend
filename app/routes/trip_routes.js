@@ -97,7 +97,7 @@ router.patch("/trips/:id", removeBlanks, (req, res, next) => {
       return trip.update(req.body.trip);
     })
     // if that succeeded, return 204 and no JSON
-    .then(() => res.status(204))
+    .then(() => res.status(204).end())
     // if an error occurs, pass it to the handler
     .catch(next);
 });
