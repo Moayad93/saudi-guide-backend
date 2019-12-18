@@ -14,7 +14,10 @@ const user = {
   credentials: {
     email: "foo@bar.baz",
     password: "12345",
-    password_confirmation: "12345"
+    password_confirmation: "12345",
+    firstName: "fahad",
+    lastName: "abdullah",
+    role: "Tourist"
   }
 };
 
